@@ -109,6 +109,15 @@ export const logout = async (req, res) => {
   }
 };
 
+export const getProfile = async (req, res) => {
+  try {
+    res.json(req.user);
+  } catch (error) {
+    console.log("Error in getProfile controller:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const refreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.cookies.refreshToken;
@@ -135,14 +144,6 @@ export const refreshToken = async (req, res) => {
     res.status(200).json({ message: "Token refreshed successfully" });
   } catch (error) {
     console.log("Error in refreshToken controller:", error);
-    res.status(500).json({ message: "Internal server error:" + error.message });
-  }
-};
-
-export const getProfile = async (req, res) => {
-  try {
-  } catch (error) {
-    console.log("Error in getProfile controller:", error);
     res.status(500).json({ message: "Internal server error:" + error.message });
   }
 };
