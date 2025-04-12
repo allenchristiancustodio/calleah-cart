@@ -26,6 +26,6 @@ router.post("/forgot-password", forgotPassword);
 
 router.post("/reset-password/:token", resetPassword);
 
-router.get("/protected", protectedRoute, getProfile);
+router.get("/check-auth", protectedRoute, getProfile);
 
 export default router;

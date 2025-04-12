@@ -42,7 +42,12 @@ export const signup = async (req, res) => {
     await storeRefreshToken(user._id, refreshToken);
 
     setCookie(res, accessToken, refreshToken);
-    await sendVerificationEmail(user.email, verificationToken);
+
+    if (user.email === "allenchristiancustodio@gmail.com") {
+      // since we using free tier of mailtrap
+      await sendVerificationEmail(user.email, verificationToken);
+    }
+
     res.status(201).json({
       message: "User created successfully",
       user: {
@@ -76,6 +81,7 @@ export const login = async (req, res) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          isVerified: user.isVerified,
         },
       });
     } else {
@@ -125,19 +131,21 @@ export const verifyEmail = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const { refreshToken } = req.cookies.refreshToken;
-    if (!refreshToken) {
-      return res.status(401).json({ message: "Unauthorized" });
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      );
+      await redis.del(`refresh_token:${decoded.userId}`);
     }
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    await redis.del(`refresh_token:${decoded.userId}`);
 
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
-    res.status(200).json({ message: "Logged out successfully" });
+    res.json({ message: "Logged out successfully" });
   } catch (error) {
-    console.log("Error in logout controller:", error);
-    res.status(500).json({ message: "Internal server error:" + error.message });
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -145,7 +153,6 @@ export const getProfile = async (req, res) => {
   try {
     res.json(req.user);
   } catch (error) {
-    console.log("Error in getProfile controller:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
