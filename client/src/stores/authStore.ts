@@ -138,16 +138,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isCheckingAuth: true, error: null });
     try {
       const response = await axios.get(`auth/check-auth`);
-      set({
-        user: response.data.user,
-        isCheckingAuth: false,
-      });
+      if (response.data) {
+        set({
+          user: response.data,
+          isAuthenticated: true,
+          isCheckingAuth: false,
+        });
+      } else {
+        set({
+          user: null,
+          isAuthenticated: false,
+          isCheckingAuth: false,
+        });
+      }
     } catch (error: unknown) {
       console.log(error instanceof Error ? error.message : "Unknown error");
       set({
         error: null,
         isCheckingAuth: false,
         user: null,
+        isAuthenticated: false,
       });
     }
   },

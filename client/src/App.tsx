@@ -11,6 +11,10 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import { useAuthStore } from "./stores/authStore";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner.tsx";
+import AdminPage from "./pages/AdminPage.tsx";
+import CategoryPage from "./pages/CategoryPage.tsx";
+import CartPage from "./pages/CartPage.tsx";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage.tsx";
 
 function App() {
   const authStore = useAuthStore();
@@ -23,26 +27,23 @@ function App() {
   if (isCheckingAuth) return <LoadingSpinner />;
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br
-    from-gray-900 via-green-900 to-emerald-900 flex items-center justify-center relative overflow-hidden"
-    >
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-orange-900 to-[#ff9f1a] flex items-center justify-center relative overflow-hidden">
       <FloatingShape
-        color="bg-green-500"
+        color="bg-[#ffaf40]"
         size="w-64 h-64"
         top="-5%"
         left="10%"
         delay={0}
       />
       <FloatingShape
-        color="bg-emerald-500"
+        color="bg-orange-500"
         size="w-48 h-48"
         top="70%"
         left="80%"
         delay={5}
       />
       <FloatingShape
-        color="bg-lime-500"
+        color="bg-[#ff9f1a]"
         size="w-32 h-32"
         top="40%"
         left="-10%"
@@ -59,6 +60,21 @@ function App() {
         <Route
           path="/login"
           element={!user ? <LoginPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/secret-dashboard"
+          element={
+            user?.role === "admin" ? <AdminPage /> : <Navigate to="/login" />
+          }
+        />
+        <Route path="/category/:category" element={<CategoryPage />} />
+        <Route
+          path="/cart"
+          element={user ? <CartPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/purchase-success"
+          element={user ? <PurchaseSuccessPage /> : <Navigate to="/login" />}
         />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

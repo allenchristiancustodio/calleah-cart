@@ -12,12 +12,14 @@ interface Product {
   category: string;
   image: string;
   isFeatured: boolean;
+  stock: number;
+  sales: number;
   [key: string]: any;
 }
 
 interface ProductState {
   products: Product[];
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
   setProducts: (products: Product[]) => void;
   createProduct: (productData: Partial<Product>) => Promise<void>;
@@ -26,17 +28,20 @@ interface ProductState {
   deleteProduct: (productId: string) => Promise<void>;
   toggleFeaturedProduct: (productId: string) => Promise<void>;
   fetchFeaturedProducts: () => Promise<void>;
+  getProducts: () => Promise<Product[]>;
+  addProduct: (formData: FormData) => Promise<void>;
+  updateProduct: (id: string, formData: FormData) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
   products: [],
-  loading: false,
+  isLoading: false,
   error: null,
 
   setProducts: (products) => set({ products }),
 
   createProduct: async (productData) => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const res = await axios.post("/products", productData);
       set((prevState) => ({
@@ -46,7 +51,7 @@ export const useProductStore = create<ProductState>((set) => ({
       toast.success("Product created successfully");
     } catch (error: any) {
       set({
-        loading: false,
+        isLoading: false,
         error: error.response?.data?.error || "Failed to create product",
       });
       toast.error(error.response?.data?.error || "Failed to create product");
@@ -54,12 +59,12 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   fetchAllProducts: async () => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const response = await axios.get("/products");
-      set({ products: response.data.products, loading: false });
+      set({ products: response.data.products, isLoading: false });
     } catch (error: unknown) {
-      set({ error: "Failed to fetch products", loading: false });
+      set({ error: "Failed to fetch products", isLoading: false });
       if (error instanceof AxiosError && error.response) {
         toast.error(error.response.data?.error || "Failed to fetch products");
       } else {
@@ -69,12 +74,12 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   fetchProductsByCategory: async (category) => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const response = await axios.get(`/products/category/${category}`);
-      set({ products: response.data.products, loading: false });
+      set({ products: response.data.products, isLoading: false });
     } catch (error: unknown) {
-      set({ error: "Failed to fetch products", loading: false });
+      set({ error: "Failed to fetch products", isLoading: false });
       if (error instanceof AxiosError && error.response) {
         toast.error(error.response.data?.error || "Failed to fetch products");
       } else {
@@ -84,7 +89,7 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   deleteProduct: async (productId) => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       await axios.delete(`/products/${productId}`);
       set((prevState) => ({
@@ -96,7 +101,7 @@ export const useProductStore = create<ProductState>((set) => ({
       toast.success("Product deleted successfully");
     } catch (error: any) {
       set({
-        loading: false,
+        isLoading: false,
         error: error.response?.data?.error || "Failed to delete product",
       });
       toast.error(error.response?.data?.error || "Failed to delete product");
@@ -104,7 +109,7 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   toggleFeaturedProduct: async (productId) => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const response = await axios.patch(`/products/${productId}`);
       set((prevState) => ({
@@ -113,12 +118,12 @@ export const useProductStore = create<ProductState>((set) => ({
             ? { ...product, isFeatured: response.data.isFeatured }
             : product
         ),
-        loading: false,
+        isLoading: false,
       }));
       toast.success("Product updated successfully");
     } catch (error: any) {
       set({
-        loading: false,
+        isLoading: false,
         error: error.response?.data?.error || "Failed to update product",
       });
       toast.error(error.response?.data?.error || "Failed to update product");
@@ -126,12 +131,12 @@ export const useProductStore = create<ProductState>((set) => ({
   },
 
   fetchFeaturedProducts: async () => {
-    set({ loading: true, error: null });
+    set({ isLoading: true, error: null });
     try {
       const response = await axios.get("/products/featured");
-      set({ products: response.data, loading: false });
+      set({ products: response.data, isLoading: false });
     } catch (error: unknown) {
-      set({ error: "Failed to fetch featured products", loading: false });
+      set({ error: "Failed to fetch featured products", isLoading: false });
       if (error instanceof AxiosError && error.response) {
         toast.error(
           error.response.data?.error || "Failed to fetch featured products"
@@ -139,6 +144,60 @@ export const useProductStore = create<ProductState>((set) => ({
       } else {
         toast.error("Failed to fetch featured products");
       }
+    }
+  },
+
+  getProducts: async () => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await axios.get("/products");
+      set({ products: response.data });
+      return response.data;
+    } catch (error) {
+      set({ error: "Failed to fetch products" });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  addProduct: async (formData: FormData) => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await axios.post("/products", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      set((state) => ({
+        products: [...state.products, response.data],
+      }));
+    } catch (error) {
+      set({ error: "Failed to add product" });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateProduct: async (id: string, formData: FormData) => {
+    try {
+      set({ isLoading: true, error: null });
+      const response = await axios.put(`/products/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      set((state) => ({
+        products: state.products.map((product) =>
+          product._id === id ? response.data : product
+        ),
+      }));
+    } catch (error) {
+      set({ error: "Failed to update product" });
+      throw error;
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));
