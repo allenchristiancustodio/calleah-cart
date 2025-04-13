@@ -19,9 +19,9 @@ router.get("/featured", getFeaturedProducts);
 
 router.get("/category/:category", getProductsByCategory);
 
-router.get("/recommended", getRecommendedProducts);
+router.get("/recommendations", getRecommendedProducts);
 
-router.post("/create", protectedRoute, adminRoute, createProduct);
+router.post("/", protectedRoute, adminRoute, createProduct);
 
 router.patch("/:id", protectedRoute, adminRoute, toggleFeaturedProduct);
 

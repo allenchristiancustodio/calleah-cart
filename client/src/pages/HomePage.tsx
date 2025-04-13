@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import CategoryItem from "../components/CategoryItem";
 import { useProductStore } from "../stores/productStore";
 import FeaturedProducts from "../components/FeaturedProducts";
+import { Loader } from "lucide-react";
 
 const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
@@ -13,13 +14,8 @@ const categories = [
 ];
 
 const HomePage = (): React.ReactElement => {
-  const productStore = useProductStore();
-
-  const { fetchFeaturedProducts, products, isLoading } = productStore as {
-    fetchFeaturedProducts: Function;
-    products: any;
-    isLoading: boolean;
-  };
+  const { fetchFeaturedProducts, products, isLoading, error } =
+    useProductStore();
 
   useEffect(() => {
     fetchFeaturedProducts();
@@ -41,11 +37,24 @@ const HomePage = (): React.ReactElement => {
           ))}
         </div>
 
-        {!isLoading && products.length > 0 && (
+        {isLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <Loader className="w-8 h-8 animate-spin text-emerald-400" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-red-500">{error}</p>
+          </div>
+        ) : products && products.length > 0 ? (
           <FeaturedProducts featuredProducts={products} />
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-300">No featured products available</p>
+          </div>
         )}
       </div>
     </div>
   );
 };
+
 export default HomePage;

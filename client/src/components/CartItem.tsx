@@ -1,14 +1,14 @@
 import { Minus, Plus, Trash } from "lucide-react";
 import { useCartStore } from "../stores/cartStore";
 
-const CartItem = (item: any) => {
+const CartItem = ({ item }: { item: any }) => {
   const { removeFromCart, updateQuantity } = useCartStore();
 
   return (
     <div className="rounded-lg border p-4 shadow-sm border-gray-700 bg-gray-800 md:p-6">
       <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
         <div className="shrink-0 md:order-1">
-          <img className="h-20 md:h-32 rounded object-cover" src={item.image} />
+          <img className="h-32 w-32 object-cover rounded" src={item.image} />
         </div>
         <label className="sr-only">Choose quantity:</label>
 
@@ -22,7 +22,7 @@ const CartItem = (item: any) => {
             >
               <Minus className="text-gray-300" />
             </button>
-            <p>{item.quantity}</p>
+            <p className="text-white">{item.quantity}</p>
             <button
               className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border
 							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none 

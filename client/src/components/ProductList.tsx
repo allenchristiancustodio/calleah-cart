@@ -5,8 +5,6 @@ import { useProductStore } from "../stores/productStore";
 const ProductsList = () => {
   const { deleteProduct, toggleFeaturedProduct, products } = useProductStore();
 
-  console.log("products", products);
-
   return (
     <motion.div
       className="bg-gray-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto"
@@ -52,7 +50,7 @@ const ProductsList = () => {
         </thead>
 
         <tbody className="bg-gray-800 divide-y divide-gray-700">
-          {products?.map((product: any) => (
+          {products.map((product: any) => (
             <tr key={product._id} className="hover:bg-gray-700">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">

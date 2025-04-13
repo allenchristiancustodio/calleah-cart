@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    cartItem: [
+    cartItems: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,

@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
 import { useAuthStore } from "./stores/authStore";
+import { useCartStore } from "./stores/cartStore.ts";
 import { useEffect } from "react";
 import LoadingSpinner from "./components/LoadingSpinner.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
@@ -20,14 +21,23 @@ function App() {
   const authStore = useAuthStore();
   const { user, checkAuth, isCheckingAuth } = authStore;
 
+  const cartStore = useCartStore();
+  const { getCartItems } = cartStore;
+
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    getCartItems();
+  }, [getCartItems, user]);
+
   if (isCheckingAuth) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-orange-900 to-[#ff9f1a] flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-white-900 to-[#ffffff] flex items-center justify-center relative overflow-hidden">
       <FloatingShape
         color="bg-[#ffaf40]"
         size="w-64 h-64"
@@ -36,7 +46,7 @@ function App() {
         delay={0}
       />
       <FloatingShape
-        color="bg-orange-500"
+        color="bg-white-500"
         size="w-48 h-48"
         top="70%"
         left="80%"

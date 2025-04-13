@@ -3,17 +3,16 @@ import toast from "react-hot-toast";
 import axios from "../lib/axios";
 import { AxiosError } from "axios";
 
-// Define interfaces for better type safety
-interface Product {
+export interface Product {
   _id: string;
   name: string;
   description: string;
   price: number;
   category: string;
   image: string;
-  isFeatured: boolean;
-  stock: number;
-  sales: number;
+  isFeatured?: boolean;
+  stock?: number;
+  sales?: number;
   [key: string]: any;
 }
 
@@ -28,9 +27,6 @@ interface ProductState {
   deleteProduct: (productId: string) => Promise<void>;
   toggleFeaturedProduct: (productId: string) => Promise<void>;
   fetchFeaturedProducts: () => Promise<void>;
-  getProducts: () => Promise<Product[]>;
-  addProduct: (formData: FormData) => Promise<void>;
-  updateProduct: (id: string, formData: FormData) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -46,7 +42,7 @@ export const useProductStore = create<ProductState>((set) => ({
       const res = await axios.post("/products", productData);
       set((prevState) => ({
         products: [...prevState.products, res.data],
-        loading: false,
+        isLoading: false,
       }));
       toast.success("Product created successfully");
     } catch (error: any) {
@@ -78,7 +74,7 @@ export const useProductStore = create<ProductState>((set) => ({
     try {
       const response = await axios.get(`/products/category/${category}`);
       set({ products: response.data.products, isLoading: false });
-    } catch (error: unknown) {
+    } catch (error: any) {
       set({ error: "Failed to fetch products", isLoading: false });
       if (error instanceof AxiosError && error.response) {
         toast.error(error.response.data?.error || "Failed to fetch products");
@@ -144,60 +140,6 @@ export const useProductStore = create<ProductState>((set) => ({
       } else {
         toast.error("Failed to fetch featured products");
       }
-    }
-  },
-
-  getProducts: async () => {
-    try {
-      set({ isLoading: true, error: null });
-      const response = await axios.get("/products");
-      set({ products: response.data });
-      return response.data;
-    } catch (error) {
-      set({ error: "Failed to fetch products" });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  addProduct: async (formData: FormData) => {
-    try {
-      set({ isLoading: true, error: null });
-      const response = await axios.post("/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      set((state) => ({
-        products: [...state.products, response.data],
-      }));
-    } catch (error) {
-      set({ error: "Failed to add product" });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  updateProduct: async (id: string, formData: FormData) => {
-    try {
-      set({ isLoading: true, error: null });
-      const response = await axios.put(`/products/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      set((state) => ({
-        products: state.products.map((product) =>
-          product._id === id ? response.data : product
-        ),
-      }));
-    } catch (error) {
-      set({ error: "Failed to update product" });
-      throw error;
-    } finally {
-      set({ isLoading: false });
     }
   },
 }));

@@ -34,9 +34,10 @@ const PeopleAlsoBought = () => {
         People also bought
       </h3>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {recommendations.map((product: any) => (
-          <ProductCard key={product._id} product={product} />
-        ))}
+        {Array.isArray(recommendations) &&
+          recommendations.map((product: any) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
       </div>
     </div>
   );

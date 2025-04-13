@@ -4,11 +4,12 @@ import { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
 // Define interfaces for better type safety
-interface Product {
+export interface Product {
   _id: string;
   name: string;
   price: number;
   quantity: number;
+  image: string;
   [key: string]: any;
 }
 
@@ -51,6 +52,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       console.error("Error fetching coupon:", error);
     }
   },
+
   applyCoupon: async (code: string) => {
     try {
       const response = await axios.post("/coupons/validate", { code });
@@ -61,6 +63,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       toast.error(error.response?.data?.message || "Failed to apply coupon");
     }
   },
+
   removeCoupon: () => {
     set({ coupon: null, isCouponApplied: false });
     get().calculateTotals();
@@ -81,10 +84,12 @@ export const useCartStore = create<CartState>((set, get) => ({
       }
     }
   },
+
   clearCart: async () => {
     set({ cart: [], coupon: null, total: 0, subtotal: 0 });
   },
-  addToCart: async (product: Product) => {
+
+  addToCart: async (product) => {
     try {
       await axios.post("/cart", { productId: product._id });
       toast.success("Product added to cart");
@@ -104,9 +109,10 @@ export const useCartStore = create<CartState>((set, get) => ({
       });
       get().calculateTotals();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(error.response.data.message || "An error occurred");
     }
   },
+
   removeFromCart: async (productId: string) => {
     await axios.delete(`/cart`, { data: { productId } });
     set((prevState) => ({
@@ -114,6 +120,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     }));
     get().calculateTotals();
   },
+
   updateQuantity: async (productId: string, quantity: number) => {
     if (quantity === 0) {
       get().removeFromCart(productId);
@@ -128,6 +135,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     }));
     get().calculateTotals();
   },
+
   calculateTotals: () => {
     const { cart, coupon } = get();
     const subtotal = cart.reduce(
