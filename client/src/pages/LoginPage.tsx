@@ -28,9 +28,16 @@ const LoginPage: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
+      className="max-w-xl w-full bg-white/5 backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-orange-500/20"
     >
-      <div className="p-8">
+      <div className="flex justify-center mt-8 ">
+        <img
+          src="logooo.jpg"
+          alt="Brand Logo"
+          className="w-52 h-auto rounded-full"
+        />
+      </div>
+      <div className="p-10">
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-[#ff9f1a] to-orange-500 text-transparent bg-clip-text">
           Welcome Back
         </h2>

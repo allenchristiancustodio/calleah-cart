@@ -4,13 +4,14 @@ import { AxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
 // Define interfaces for better type safety
-export interface Product {
+export interface ProductItem {
   _id: string;
   name: string;
   price: number;
+  description: string;
   quantity: number;
   image: string;
-  [key: string]: any;
+  products?: ProductItem[];
 }
 
 interface Coupon {
@@ -21,7 +22,7 @@ interface Coupon {
 }
 
 interface CartState {
-  cart: Product[];
+  cart: ProductItem[];
   coupon: Coupon | null;
   total: number;
   subtotal: number;
@@ -31,7 +32,7 @@ interface CartState {
   removeCoupon: () => void;
   getCartItems: () => Promise<void>;
   clearCart: () => Promise<void>;
-  addToCart: (product: Product) => Promise<void>;
+  addToCart: (product: ProductItem) => Promise<void>;
   removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   calculateTotals: () => void;

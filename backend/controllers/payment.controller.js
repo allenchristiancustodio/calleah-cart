@@ -1,6 +1,7 @@
 import Coupon from "../models/coupon.model.js";
 import Order from "../models/order.model.js";
 import { stripe } from "../lib/stripe.js";
+import { sendPaymentSuccess } from "../mailtrap/emails.js";
 
 export const createCheckoutSession = async (req, res) => {
   try {
@@ -62,6 +63,7 @@ export const createCheckoutSession = async (req, res) => {
         products: JSON.stringify(
           products.map((p) => ({
             id: p._id,
+            name: p.name,
             quantity: p.quantity,
             price: p.price,
           }))
@@ -105,6 +107,7 @@ export const checkoutSuccess = async (req, res) => {
         user: session.metadata.userId,
         products: products.map((product) => ({
           product: product.id,
+          name: product.name,
           quantity: product.quantity,
           price: product.price,
         })),
@@ -113,6 +116,12 @@ export const checkoutSuccess = async (req, res) => {
       });
 
       await newOrder.save();
+      let email = "allenxtiansmurf@gmail.com";
+      try {
+        await sendPaymentSuccess(email, newOrder._id, newOrder.products);
+      } catch (error) {
+        console.error("Error sending email successful checkout:", error);
+      }
 
       res.status(200).json({
         success: true,

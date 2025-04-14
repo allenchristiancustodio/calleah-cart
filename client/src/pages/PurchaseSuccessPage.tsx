@@ -10,8 +10,9 @@ const PurchaseSuccessPage = (): React.ReactElement => {
   const [isProcessing, setIsProcessing] = useState<boolean>(true);
   const { clearCart } = useCartStore();
   const [error, setError] = useState<string | null>(null);
-
+  let hasRun = false;
   useEffect(() => {
+    if (hasRun) return; // to avoid running it twice on development
     const handleCheckoutSuccess = async (sessionId: string): Promise<void> => {
       try {
         await axios.post("/payments/checkout-success", {
@@ -38,6 +39,7 @@ const PurchaseSuccessPage = (): React.ReactElement => {
       setError("No session ID found in the URL");
       toast.error("No session ID found in the URL");
     }
+    hasRun = true;
   }, [clearCart]);
 
   if (isProcessing) {

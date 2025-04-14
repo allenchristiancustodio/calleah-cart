@@ -23,35 +23,42 @@ const HomePage = (): React.ReactElement => {
 
   return (
     <div className="relative min-h-screen text-white overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 className="text-center text-5xl sm:text-6xl font-bold text-emerald-400 mb-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+        <h1 className="text-center text-4xl sm:text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#ff9f1a] to-orange-500">
           Explore Our Categories
         </h1>
-        <p className="text-center text-xl text-gray-300 mb-12">
+        <p className="text-center text-lg sm:text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
           Discover the latest trends in eco-friendly fashion
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((category) => (
             <CategoryItem category={category} key={category.name} />
           ))}
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <Loader className="w-8 h-8 animate-spin text-emerald-400" />
-          </div>
-        ) : error ? (
-          <div className="text-center py-12">
-            <p className="text-red-500">{error}</p>
-          </div>
-        ) : products && products.length > 0 ? (
-          <FeaturedProducts featuredProducts={products} />
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-300">No featured products available</p>
-          </div>
-        )}
+        <div className="mt-16">
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <Loader className="w-8 h-8 animate-spin text-orange-400" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-red-500 font-medium">{error}</p>
+            </div>
+          ) : products && products.length > 0 ? (
+            <div>
+              <h2 className="text-3xl font-semibold text-center text-orange-400 mb-8">
+                Featured Products
+              </h2>
+              <FeaturedProducts featuredProducts={products} />
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No featured products available</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

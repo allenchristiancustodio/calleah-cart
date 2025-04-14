@@ -9,87 +9,75 @@ const Navbar = () => {
   const { cart } = useCartStore();
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-orange-800">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-wrap justify-between items-center">
+    <header className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-50 border-b border-orange-800">
+      <div className="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+        <Link to="/" className="flex items-center space-x-3">
+          <h2 className="text-orange-500 flex items-center text-2xl">
+            <ShoppingCart className="mr-1" />
+            CalleahCart
+          </h2>
+        </Link>
+
+        <nav className="flex flex-wrap items-center gap-4 text-sm sm:text-base font-medium">
           <Link
             to="/"
-            className="text-2xl font-bold text-[#ff9f1a] items-center space-x-2 flex"
+            className="text-gray-300 hover:text-[#ff9f1a] transition duration-300"
           >
-            CalleahCart
+            Home
           </Link>
 
-          <nav className="flex flex-wrap items-center gap-4">
+          {user && (
             <Link
-              to={"/"}
-              className="text-gray-300 hover:text-[#ff9f1a] transition duration-300
-					 ease-in-out"
+              to="/cart"
+              className="relative group text-gray-300 hover:text-[#ff9f1a] transition duration-300"
             >
-              Home
+              <ShoppingCart className="inline-block mr-1" size={20} />
+              <span className="hidden sm:inline">Cart</span>
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -left-2 bg-[#ff9f1a] text-white rounded-full px-2 py-0.5 text-xs">
+                  {cart.length}
+                </span>
+              )}
             </Link>
-            {user && (
-              <Link
-                to={"/cart"}
-                className="relative group text-gray-300 hover:text-[#ff9f1a] transition duration-300 
-							ease-in-out"
-              >
-                <ShoppingCart
-                  className="inline-block mr-1 group-hover:text-[#ff9f1a]"
-                  size={20}
-                />
-                <span className="hidden sm:inline">Cart</span>
-                {cart.length > 0 && (
-                  <span
-                    className="absolute -top-2 -left-2 bg-[#ff9f1a] text-white rounded-full px-2 py-0.5 
-									text-xs group-hover:bg-[#ff9f1a] transition duration-300 ease-in-out"
-                  >
-                    {cart.length}
-                  </span>
-                )}
-              </Link>
-            )}
-            {isAdmin && (
-              <Link
-                className="bg-[#ff9f1a] hover:bg-[#e68a00] text-white px-3 py-1 rounded-md font-medium
-								 transition duration-300 ease-in-out flex items-center"
-                to={"/secret-dashboard"}
-              >
-                <Lock className="inline-block mr-1" size={18} />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
-            )}
+          )}
 
-            {user ? (
-              <button
-                className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 
-						rounded-md flex items-center transition duration-300 ease-in-out"
-                onClick={logout}
+          {isAdmin && (
+            <Link
+              to="/secret-dashboard"
+              className="flex items-center bg-[#ff9f1a] hover:bg-[#e68a00] text-white px-3 py-1 rounded-md transition duration-300"
+            >
+              <Lock className="mr-1" size={18} />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Link>
+          )}
+
+          {user ? (
+            <button
+              onClick={logout}
+              className="flex items-center bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition duration-300"
+            >
+              <LogOut size={18} />
+              <span className="hidden sm:inline ml-2">Log Out</span>
+            </button>
+          ) : (
+            <>
+              <Link
+                to="/signup"
+                className="flex items-center bg-[#ff9f1a] hover:bg-[#e68a00] text-white py-2 px-4 rounded-md transition duration-300"
               >
-                <LogOut size={18} />
-                <span className="hidden sm:inline ml-2">Log Out</span>
-              </button>
-            ) : (
-              <>
-                <Link
-                  to={"/signup"}
-                  className="bg-[#ff9f1a] hover:bg-[#e68a00] text-white py-2 px-4 
-									rounded-md flex items-center transition duration-300 ease-in-out"
-                >
-                  <UserPlus className="mr-2" size={18} />
-                  Sign Up
-                </Link>
-                <Link
-                  to={"/login"}
-                  className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 
-									rounded-md flex items-center transition duration-300 ease-in-out"
-                >
-                  <LogIn className="mr-2" size={18} />
-                  Login
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
+                <UserPlus className="mr-2" size={18} />
+                Sign Up
+              </Link>
+              <Link
+                to="/login"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition duration-300"
+              >
+                <LogIn className="mr-2" size={18} />
+                Login
+              </Link>
+            </>
+          )}
+        </nav>
       </div>
     </header>
   );
