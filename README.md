@@ -76,6 +76,14 @@
 
 ![Cart Page](./screenshot/admin-product.jpg)
 
+### Checkout Page
+
+![Cart Page](./screenshot/checkout.jpg)
+
+### Email
+
+![Cart Page](./screenshot/Email.jpg)
+
 ---
 
 ## 🚀 Getting Started
