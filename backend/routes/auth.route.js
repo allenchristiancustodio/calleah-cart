@@ -24,7 +24,7 @@ router.post("/refresh-token", refreshToken);
 
 router.post("/forgot-password", forgotPassword);
 
-router.post("/reset-password/:token", resetPassword);
+// router.post("/reset-password/:token", resetPassword);
 
 router.get("/check-auth", protectedRoute, getProfile);
 
