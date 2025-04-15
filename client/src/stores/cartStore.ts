@@ -47,7 +47,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   getMyCoupon: async () => {
     try {
-      const response = await axios.get("/coupons");
+      const response = await axios.get("/coupons/get");
       set({ coupon: response.data });
     } catch (error) {
       console.error("Error fetching coupon:", error);
@@ -73,7 +73,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   getCartItems: async () => {
     try {
-      const res = await axios.get("/cart");
+      const res = await axios.get("/cart/items");
       set({ cart: res.data });
       get().calculateTotals();
     } catch (error: unknown) {
@@ -92,7 +92,7 @@ export const useCartStore = create<CartState>((set, get) => ({
 
   addToCart: async (product) => {
     try {
-      await axios.post("/cart", { productId: product._id });
+      await axios.post("/cart/item", { productId: product._id });
       toast.success("Product added to cart");
 
       set((prevState) => {
@@ -115,7 +115,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   removeFromCart: async (productId: string) => {
-    await axios.delete(`/cart`, { data: { productId } });
+    await axios.delete(`/cart/item`, { data: { productId } });
     set((prevState) => ({
       cart: prevState.cart.filter((item) => item._id !== productId),
     }));
@@ -128,7 +128,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       return;
     }
 
-    await axios.put(`/cart/${productId}`, { quantity });
+    await axios.put(`/cart/item/${productId}`, { quantity });
     set((prevState) => ({
       cart: prevState.cart.map((item) =>
         item._id === productId ? { ...item, quantity } : item

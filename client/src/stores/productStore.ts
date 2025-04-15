@@ -39,7 +39,7 @@ export const useProductStore = create<ProductState>((set) => ({
   createProduct: async (productData) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await axios.post("/products", productData);
+      const res = await axios.post("/products/create", productData);
       set((prevState) => ({
         products: [...prevState.products, res.data],
         isLoading: false,
@@ -57,7 +57,7 @@ export const useProductStore = create<ProductState>((set) => ({
   fetchAllProducts: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get("/products");
+      const response = await axios.get("/products/all");
       set({ products: response.data.products, isLoading: false });
     } catch (error: unknown) {
       set({ error: "Failed to fetch products", isLoading: false });
@@ -107,7 +107,7 @@ export const useProductStore = create<ProductState>((set) => ({
   toggleFeaturedProduct: async (productId) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.patch(`/products/${productId}`);
+      const response = await axios.patch(`/products/toggle/${productId}`);
       set((prevState) => ({
         products: prevState.products.map((product) =>
           product._id === productId
