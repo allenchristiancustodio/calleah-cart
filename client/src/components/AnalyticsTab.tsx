@@ -37,7 +37,7 @@ const AnalyticsTab = (): React.ReactElement => {
   useEffect(() => {
     const fetchAnalyticsData = async () => {
       try {
-        const response = await axios.get("/analytics");
+        const response = await axios.get("/analytics/data");
         setAnalyticsData(response.data.analyticsData);
         setDailySalesData(response.data.dailySalesData);
       } catch (error) {

@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", protectedRoute, adminRoute, async (req, res) => {
+router.get("/data", protectedRoute, adminRoute, async (req, res) => {
   try {
     const analyticsData = await getAnalyticsData();
 
