@@ -78,7 +78,7 @@
 
 ### Checkout Page
 
-![Cart Page](./screenshot/checkout.jpg)
+![Cart Page](./screenshot/checkoutjpg.jpg)
 
 ### Email
 
